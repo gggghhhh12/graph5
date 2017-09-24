@@ -1,17 +1,22 @@
 package graph;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Random;
 import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
+import javax.imageio.stream.MemoryCacheImageInputStream;
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
 
-
-public class graph
+import org.omg.CORBA.PUBLIC_MEMBER;
+public class graph extends JFrame
 {
 public String[] node=new String[1000];
 public int [][] Matrix=new int [1000][1000];
@@ -63,7 +68,6 @@ public graph createDirectedGraph(String filename)
 			{
 				if(a[i].equals(node1[j]))
 				{	
-					
 					for(int k=0;k<num;k++)
 					{
 						if(a[i+1].equals(node1[k]))
@@ -118,12 +122,7 @@ public graph createDirectedGraph(String filename)
 		System.out.println("不存在此文件");
 	}
 	return this;
-	
-
 }
-
-
-
 public void showDirectedGraph(graph G){
 	    GraphViz gViz=new GraphViz("C:\\Users\\11969\\Desktop\\1111","D:\\dot\\bin\\dot.exe" );
 	    gViz.start_graph();
@@ -138,24 +137,24 @@ public void showDirectedGraph(graph G){
 	    	}
 	    }
 	    gViz.end_graph();
+	    JFrame jf=new JFrame("有向图");
+		ImageIcon image=new ImageIcon("C:\\Users\\11969\\Desktop\\1111\\dotGIF.gif");
+		JLabel label=new JLabel(image);
+		jf.add(label);
 	    try {
 	        gViz.run();
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
+	   
 }
-
-
-
-
-
-
 public String queryBridgeWords(graph G,String word1,String word2)
 { 
 	int w1=-1,w2=-1;
 	word1=word1.toLowerCase();
 	word2=word2.toLowerCase();
 	String bridge[]=new String[G.vertexnum];
+	String word3="";
 	for(int i=0;i<G.vertexnum;i++)
 	{
 		if(G.node[i].equals(word1))
@@ -172,15 +171,15 @@ public String queryBridgeWords(graph G,String word1,String word2)
 	String out[]=new String[G.vertexnum];
 	if(w1==-1&&w2!=-1)
 	{
-		System.out.println("No\""+word1+"\"exist in the graph");
+		word3=word3+"No\""+word1+"\"exist in the graph";
 	}
 	else if(w1!=-1&&w2==-1)
 	{
-		System.out.println("No\""+word2+"\" exist in the graph");
+		word3=word3+"No\""+word2+"\" exist in the graph";
 	}
 	else if(w1==-1&&w2==-1)
 	{
-		System.out.println("No\""+word1+"\" and \""+word2+"\"exist in the graph");
+		word3=word3+"No\""+word1+"\" and \""+word2+"\"exist in the graph";
 	}
 	else
 	{
@@ -202,32 +201,27 @@ public String queryBridgeWords(graph G,String word1,String word2)
 			    count++;
 			}
 		}
+		
 		if(count==0)
 		{
-			System.out.println("No bridge words from \""+word1+"\"to \""+word2+"!");
+			word3=word3+"No bridge words from \""+word1+"\"to \""+word2+"\"!";
 		}
 		else if(count==1)
 		{
-			System.out.println("The bridge words from \""+word1+"\"to \""+word2+"\"is: "+out[0]);
+			word3=word3+"The bridge words from \""+word1+"\"to \""+word2+"\"is: \""+out[0];
 		}
 		else 
 		{
-			System.out.print("The bridge words from \""+word1+"\"to \""+word2+"\"is: ");
+			word3=word3+"The bridge words from \""+word1+"\"to \""+word2+"\"are: \" ";
 			for(int i=0;i<count-1;i++)
 			{
 				System.out.print(out[i]+",");
 			}
-			System.out.print("and "+out[count]);
+			System.out.print("and "+out[count-1]);
 		}
 	}
-	return "1";
+	return word3;
 }
-
-
-
-
-
-
 public String generateNewText(graph G,String inputText)
 {
 	String a[]=inputText.split("[^a-zA-Z]+");
@@ -277,7 +271,6 @@ public String generateNewText(graph G,String inputText)
     		    count++;
     		}
     	}
-    	  
     	newtxt=newtxt+a[j]+" ";
     	if(count!=0)
     	{
@@ -288,23 +281,18 @@ public String generateNewText(graph G,String inputText)
     	{
     		newtxt=newtxt+a[j]+" ";
     	}
-    	
-		
     }
-  
     newtxt=newtxt+a[a.length-1];
 	return newtxt;
-    
 }
-
 public String calsShortestPath(graph G,String word1,String word2)
 {
-	int d[][]=new int[G.vertexnum][G.vertexnum] ;
-	String s=new String();
+	int d[][]=new int[G.vertexnum][G.vertexnum];
 	boolean[][][] p = new boolean[G.vertexnum][G.vertexnum][G.vertexnum];
 	int w1=-1,w2=-1;
 	word1=word1.toLowerCase();
 	word2=word2.toLowerCase();
+	String word3="";
 	for(int i=0;i<G.vertexnum;i++)
 	{
 		if(G.node[i].equals(word1))
@@ -350,42 +338,39 @@ public String calsShortestPath(graph G,String word1,String word2)
 			}
 		}
 	}
-
-
 	if(w1==-1&&w2!=-1)
 	{
-		System.out.println("No\""+word1+"\"exist in the graph");
+		word3=word3+"No\""+word1+"\"exist in the graph";
 	}
 	else if(w2==-1&&w1!=-1)
 	{
-		System.out.println("No\""+word2+"\" exist in the graph");
+		word3=word3+"No\""+word2+"\" exist in the graph";
 	}
 	else if(w2==-1&&w2==-1)
 	{
-		System.out.println("No\""+word2+" and "+"\"exist in the graph");
+		word3=word3+"No\""+word2+" and "+"\"exist in the graph";
 	}
 	else if(w1==w2)
 	{
-		System.out.println("Two words are same!");
+		word3=word3+"Two words are same!";
 	}
 	else
 	{
 		if(d[w1][w2]<100000)
 		{
-			System.out.println("The length of the path is:"+d[w1][w2]);
+			word3=word3+"The length of the path is:"+d[w1][w2];
 		}
-		System.out.print("The  path is: ");
+		word3=word3+"     "+"The  path is: ";
 		for(int i=w1;i<G.vertexnum+w1;i++)
 		{
 			if(p[w1][w2][i%G.vertexnum]==true)
 			{
-				System.out.print(G.node[i%G.vertexnum]+"->");
+				word3=word3+G.node[i%G.vertexnum]+"->";
 			}
 		}
-		System.out.print("END");
-	
+		word3=word3+"END";
 	}
-     return "1";
+     return word3;
 }
 public String randomwalk(graph G)
 {
@@ -394,6 +379,7 @@ public String randomwalk(graph G)
 	int rand[][]=new int[G.vertexnum][G.vertexnum];
 	int out[]=new int[G.vertexnum];
 	int i2,i3,count;
+	String word3="";
 	i2=random.nextInt(G.vertexnum);
 	newtxt=newtxt+G.node[i2];
 	
@@ -408,7 +394,6 @@ public String randomwalk(graph G)
 	    		count++;
 	    	}
 	    }
-	   // System.out.println(count);
 	    if(count!=0)
 	    {
 	    i3=out[random.nextInt(count)];
@@ -427,23 +412,12 @@ public String randomwalk(graph G)
 	    }	
 	}
 	String a[]=newtxt.split(" ");
-	System.out.println("请输入“1”开始游走");
 	for(int i=0;i<a.length;i++)
-	{
-		Scanner sc=new Scanner(System.in);
-		String input= (String)sc.next();
-		if(input.equals("1"))
-		{
-		System.out.print(a[i]);
-		}
-		else{
-			System.out.println("终止");
-			break;
-		}
-		 
+	{	
+		word3=word3+" "+a[i];
 	}
-	//System.out.println(newtxt);
-	return "1";
+	
+	return word3;
 }
 public static void main(String[] args) {
 	graph G=new graph();
@@ -467,10 +441,8 @@ public static void main(String[] args) {
     	switch(mode)
     	{
     	case "1":
-    		System.out.println("请输入文件路径");
-    		Scanner sl=new Scanner(System.in);
-    		String k=new String();
-    		 k=sl.nextLine();
+  
+    	    String k=JOptionPane.showInputDialog("请输入文件路径");
         	G.createDirectedGraph(k);
         	break;
     	case "2":
@@ -514,6 +486,5 @@ public static void main(String[] args) {
     	}
     	
     }while(true);
-
     }
 }
